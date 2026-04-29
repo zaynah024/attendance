@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+  --color-primary: #3b82f6;
+  --color-secondary: #1e293b;
+  --color-accent: #60a5fa;
+  --font-sans: 'Inter', sans-serif;
+}
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+}
+
+@utility glass {
+  background-color: oklch(100% 0 0 / 5%);
+  backdrop-filter: blur(16px);
+  border: 1px solid oklch(100% 0 0 / 10%);
+}
+
+@utility glow {
+  box-shadow: 0 0 20px oklch(58.63% 0.227 258.89 / 20%);
+}
+
+@utility video-container {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
