@@ -4,8 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { Camera, Users, Clock, UserPlus, ShieldCheck, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface AttendanceLog {
+  Name: string;
+  Time: string;
+}
+
 export default function Home() {
-  const [attendance, setAttendance] = useState([]);
+  const [attendance, setAttendance] = useState<AttendanceLog[]>([]);
   const [stats, setStats] = useState({ total_logs: 0, unique_students: 0, last_entry: 'None' });
   const [isRegistering, setIsRegistering] = useState(false);
   const [newName, setNewName] = useState('');
@@ -43,12 +48,29 @@ export default function Home() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus({ message: 'Registering...', type: 'info' });
+    if (!newName) {
+      setStatus({ message: 'Please enter a name.', type: 'error' });
+      return;
+    }
     
-    // In a real app, we'd capture a frame from the video feed.
-    // For this demo, we'll assume the backend handles the capture if we send a signal,
-    // but here we'll just show the UI for it.
-    setStatus({ message: 'Registration requires a photo capture. Please use register.py for now.', type: 'error' });
+    setStatus({ message: 'Capturing...', type: 'info' });
+    
+    try {
+      const res = await fetch(`http://localhost:8000/register_capture?name=${encodeURIComponent(newName)}`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      
+      if (data.status === 'success') {
+        setStatus({ message: data.message, type: 'success' });
+        setNewName('');
+        setTimeout(() => setIsRegistering(false), 2000);
+      } else {
+        setStatus({ message: data.message, type: 'error' });
+      }
+    } catch (err) {
+      setStatus({ message: 'Failed to connect to backend.', type: 'error' });
+    }
   };
 
   return (
@@ -191,9 +213,10 @@ export default function Home() {
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   />
                 </div>
-                <div className="p-6 border-2 border-dashed border-white/10 rounded-2xl text-center text-gray-500">
-                  <Camera size={32} className="mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">Capture will happen in backend</p>
+                <div className="p-6 border-2 border-dashed border-blue-500/30 rounded-2xl text-center text-gray-400 bg-blue-500/5">
+                  <Camera size={32} className="mx-auto mb-2 text-blue-400" />
+                  <p className="text-sm">Position yourself in the live feed</p>
+                  <p className="text-xs text-gray-500 mt-1">We will capture the current frame</p>
                 </div>
                 <div className="flex gap-3">
                   <button 

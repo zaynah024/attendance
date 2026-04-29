@@ -1,50 +1,66 @@
-# Automated Face Recognition Attendance System
+# 🚀 Automated Face Recognition Attendance System
 
-This system uses a webcam to automatically detect and recognize students, logging their attendance in a CSV file.
+A premium, real-time attendance tracking system using **Python**, **OpenCV**, **FastAPI**, and **Next.js**.
 
-## Features
-- **Real-time Face Detection**: Uses HOG/CNN via `face_recognition`.
-- **128-D Face Encodings**: High-accuracy facial feature extraction.
-- **Automated Logging**: Saves Name and Timestamp to `attendance.csv`.
-- **Duplicate Prevention**: Only marks attendance once per student per day.
-- **Student Registration**: Easy script to add new student photos.
+---
 
-## Setup Instructions
+## ✨ Features
+- **Real-time Recognition**: Detects and identifies students via webcam.
+- **Next.js Dashboard**: Stunning dark-mode dashboard with live stream and stats.
+- **Web-Based Registration**: Register new students directly from the dashboard!
+- **Smart Logging**: Prevents duplicate attendance marks for the same day.
+- **Optimized for macOS**: Custom memory handling and bypass for AVFoundation.
 
-1. **Install Dependencies**:
-   ```bash
-   # Create a virtual environment (already done in this workspace)
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
+---
 
-2. **Register Students**:
-   Run the registration script to take a photo of yourself or a student:
-   ```bash
-   python3 register.py
-   ```
-   - Enter the student's name.
-   - Look at the camera and press **'s'** to save the photo.
-   - The photo will be saved in `student_images/`.
+## 🛠️ Project Structure
+- `/face-attendance`: Python backend logic and API.
+- `/face-attendance/frontend`: Next.js React dashboard.
+- `/student_images`: Storage for student reference photos.
+- `attendance.csv`: The generated attendance report.
 
-3. **Run Attendance System**:
-   ```bash
-   python3 main.py
-   ```
-   - The system will load the encoded faces.
-   - It will open a webcam window.
-   - When it recognizes a face, it will draw a green box and log the attendance.
-   - Press **'q'** to quit.
+---
 
-## Files
-- `main.py`: The core application.
-- `utils.py`: Helper functions for encoding and logging.
-- `register.py`: Utility to capture new student photos.
-- `attendance.csv`: Generated log file.
-- `student_images/`: Folder containing reference photos.
+## 🏃‍♂️ How to Run
 
-## Technical Details
-- **Backend**: Python 3.x
-- **Computer Vision**: OpenCV & face_recognition (dlib)
-- **Data Management**: Pandas
+### 1. Start the Backend (Terminal 1)
+```bash
+cd face-attendance
+source venv/bin/activate
+
+# Critical fix for macOS camera permissions
+export OPENCV_AVFOUNDATION_SKIP_AUTH=1
+
+# Run the API
+python3 api.py
+```
+*API will run at `http://localhost:8000`*
+
+### 2. Start the Frontend (Terminal 2)
+```bash
+cd face-attendance/frontend
+npm run dev
+```
+*Dashboard will run at `http://localhost:3000`*
+
+---
+
+## 📸 Registration Guide
+1. Open the dashboard in your browser.
+2. Click the **"Register Student"** button.
+3. Enter the student's name.
+4. Position yourself in the live feed and click **"Begin Capture"**.
+5. The system will instantly reload and start recognizing the new student!
+
+---
+
+## ⚠️ Troubleshooting (macOS)
+- **Permission Error**: If you see `not authorized to capture video`, go to *System Settings > Privacy > Camera* and ensure your terminal app is checked.
+- **Port in Use**: If port 8000 is busy, run: `lsof -ti:8000 | xargs kill -9`.
+- **Malloc Error**: Ensure you have run `export OPENCV_AVFOUNDATION_SKIP_AUTH=1` in your terminal session.
+
+---
+
+## 🛠️ Tech Stack
+- **Backend**: Python 3.14, FastAPI, OpenCV, dlib (face_recognition), Pandas.
+- **Frontend**: Next.js 16, Tailwind CSS v4, Framer Motion, Lucide Icons.
