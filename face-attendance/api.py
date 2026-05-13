@@ -97,6 +97,44 @@ async def get_attendance():
         return pd.read_csv(filename).to_dict(orient='records')
     return []
 
+@app.get("/students")
+async def get_students():
+    path = 'student_images'
+    if not os.path.exists(path):
+        return []
+    students = []
+    for f in os.listdir(path):
+        if f.lower().endswith(('.jpg', '.jpeg', '.png')):
+            name = os.path.splitext(f)[0].replace('_', ' ').upper()
+            students.append(name)
+    return sorted(students)
+
+@app.delete("/students/{name}")
+async def delete_student(name: str):
+    path = 'student_images'
+    # Try to find the file with underscores
+    filename = name.replace(' ', '_')
+    for ext in ['.jpg', '.jpeg', '.png']:
+        filepath = os.path.join(path, filename + ext)
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            load_data()
+            return {"status": "success", "message": f"Student {name} removed."}
+    return {"status": "error", "message": "Student not found."}
+
+@app.post("/reload")
+async def reload_system():
+    load_data()
+    return {"status": "success", "message": "System data reloaded from disk."}
+
+@app.post("/reset_camera")
+async def reset_camera():
+    global cap
+    if cap is not None:
+        cap.release()
+        cap = None
+    return {"status": "success", "message": "Camera has been reset."}
+
 @app.post("/register_capture")
 async def register_capture(name: str):
     global current_frame
